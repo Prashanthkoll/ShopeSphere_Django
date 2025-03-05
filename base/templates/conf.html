@@ -1,0 +1,8 @@
+{% extends 'main.html' %}
+{% block content %}
+<h1>Are you sure to delete all order items!</h1>
+<form action="">
+    <input type="submit" name="del" value="Delete">
+</form>
+<a href="{% url 'cart' %}">Back</a>
+{% endblock content %}

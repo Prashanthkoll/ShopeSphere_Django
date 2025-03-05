@@ -1,0 +1,33 @@
+{% extends 'main.html' %}
+{% block content %}
+<div class="profile">
+
+<div class="register">
+    <h1>Profile</h1>
+    <form action="">
+        <div class="row">
+            <span>Username</span><span>{{request.user}}</span>
+        </div>
+        <div class="row">
+            <span>First name </span><span>{{request.user.first_name}}</span>
+        </div>
+        <div class="row">
+            <span>Last name</span><span>{{request.user.last_name}}</span>
+        </div>
+        <div class="row">
+            <span>Email</span><span>{{request.user.email}}</span>
+        </div>
+       <div class="ss"><a href="{% url 'editprofile' %}">Update Profile</a></div><br>
+       <div class="ss"><a href="{% url 'changepassword' %}">Change Password</a></div>
+    
+    {% if messages %}
+    {% for i in messages %}
+        <h1>{{i}}</h1>
+        {% endfor %}
+    {% endif %}
+    </form>
+    
+</div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,70 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+<!-- <center>
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+    <label for="">Category</label><br>
+    <input type="text" name="cat"><br>
+    <label for="">Name</label><br>
+    <input type="text" name="name"><br>
+    <label for="">Desc</label><br>
+    <input type="text" name="desc"><br>
+    <label for="">Price</label><br>
+    <input type="number" name="price"><br>
+    <label for="">Images</label><br>
+    <input type="file" name="img"><br><br>
+    <input type="submit">
+    </form>
+</center><br>
+<hr style="color: black;"> -->
+{% if category_nav %}
+<div class="category">
+    <form action="">
+        <input class="trending" type="submit" name="trending" value="Trending">
+    </form>
+    <form action="" >
+        <input class="sale"  type="submit" name="sale" value="Sale">
+    </form>
+    {% for i in products_category %}
+        <!-- <h5><a href="">{{i}}</a></h5> -->
+        <form action="" >
+            <input type="submit" name="category" value="{{i}}">
+        </form>
+    {% endfor %}
+    <a href="{% url 'home' %}">All Product</a>
+</div>
+{% endif %}
+
+{% if brand_nav %}
+<div class="brand">
+    {% for i in products %}
+        <form action="">
+            <input type="submit" name="brand" value="{{i.name}}">
+        </form>
+    {% endfor %}
+    <a href="{% url 'home' %}">All Product</a>
+</div>
+{% endif %}
+
+
+
+
+
+<div class="home">
+    {% for i in products %}
+    <div class="addcard">
+        <img src="{{i.img.url}}" alt="{{ i.name }}" width="200px" height="100" onclick="showImage(this)">
+        <h2>{{i.name}}</h2>
+    <h3>{{i.desc | truncatewords:2}} <br> <sup>&#8377;</sup>{{i.price}}</h3>
+    <h3><a href="{% url 'details' i.id %}">Details</a> &nbsp; <a href="{% url 'addcart' i.id %}">Cart</a></h3>
+    </div>
+
+    <div id="imageModal" class="modal" onclick="closeImage()">
+        <img id="largeImage" src="">
+    </div>
+    {% endfor %}
+</div>
+<script src="{% static 'js/main.js' %}"></script>
+{% endblock content %}

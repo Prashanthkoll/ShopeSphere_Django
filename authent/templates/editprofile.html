@@ -1,0 +1,28 @@
+{% extends 'main.html' %}
+{% block content %}
+<div class="register">
+    <h1>Update Profile</h1>
+    <form action="" method="POST"><br>
+        {% csrf_token %}
+        <div class="row">
+            <label for="">First Name</label><br>
+            <input type="text" name="firstname" placeholder="first_name" value="{{request.user.first_name}}" required>
+        </div>
+        <div class="row">
+            <label for="">Last Name</label><br>
+            <input type="text" name="lastname" placeholder="last_name" value="{{request.user.last_name}}" required>
+        </div>
+        <div class="row">
+            <label for="">Full Name</label><br>
+            <input type="text" name="name" placeholder="name" value="{{request.user}}" required>
+        </div>
+        <div class="row">
+            <label for="">Email</label><br>
+            <input type="email" name="email" placeholder="email" value="{{request.user.email}}" required>
+        </div>
+        <input class="ss" type="submit"><br><br>
+    </form>
+
+</div>
+
+{% endblock content %}

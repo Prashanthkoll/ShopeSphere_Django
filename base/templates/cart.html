@@ -1,0 +1,55 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="cart">
+    <h1>Cart Items</h1>
+    {% for i in data %}
+    <div class="addcard">
+        <h2>{{i.name}}</h2>
+        <div class="a">
+            <img src="{{i.img.url}}" alt="{{ i.name }}" width="200px" height="100" onclick="showImage(this)">
+    <h3>{{i.desc | truncatewords:2}} <br> <sup>&#8377;</sup>{{i.price}} <span><a href="{% url 'reduce' i.id %}">-</a>{{i.quantity}}<a href="{% url 'increse' i.id %}">+</a></span></h3>
+    <h3><a href="{% url 'details' i.id %}">Details</a> &nbsp; <a href="{% url 'remove' i.id %}">Remove</a></h3>
+    <h3>total={{i.totalprice}}</h3>
+    <h3><a href="{% url 'buy' i.id %}">Buy</a></h3>
+        </div>
+    </div>
+
+    <div id="imageModal" class="modal" onclick="closeImage()">
+        <img id="largeImage" src="">
+    </div>
+    {% endfor %}
+</div>
+
+
+
+
+<div class="buy">
+    <h1>Order Items</h1>
+    <div class="aa">
+        {% for i in buyproducts %}
+        <div class="aa1">
+            <h2>{{i.name}}</h2>
+        <h3>{{i.desc | truncatewords:2}}<sup>&#8377;</sup>{{i.price}}<span><a href="{% url 'reduce1' i.id %}">-</a>{{i.quantity}}<a href="{% url 'increse1' i.id %}">+</a></span></h3>
+        <img src="{{i.img.url}}" alt="{{ i.name }}" width="100px" height="50" onclick="showImage(this)">
+        <h3><a href="{% url 'buydelete' i.id %}">Delete</a></h3>
+        <h3>total={{i.totalprice}}</h3>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="aaa">
+        
+        <h2><a href="">Buy All</a></h2>
+        <h3>Cart Total Price = <sup>&#8377;</sup>{{totalcart}}</h3>
+        <h3>Order Total Price = <sup>&#8377;</sup>{{totalorder}}</h3>
+        <h3><a href="{% url 'buydeleteall' %}">Delete All</a></h3>
+    </div>
+    <div id="imageModal" class="modal" onclick="closeImage()">
+        <img id="largeImage" src="">
+    </div>
+</div>
+<script src="{% static 'js/main.js' %}"></script>
+
+
+{% endblock content %}

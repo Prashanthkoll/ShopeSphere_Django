@@ -1,0 +1,25 @@
+{% extends 'main.html' %}
+{% block content %}
+<div class="register">
+    <h1>Login</h1>
+    <form action="" method="POST"><br>
+        {% csrf_token %}
+        <div class="row">
+            <label for="">Username</label><br>
+            <input type="text" name="name" placeholder="Username" required>
+        </div>
+        <div class="row">
+            <label for="">Password</label>
+            <input type="password" name="password" placeholder="password" required>
+        </div>
+        <input class="ss" type="submit"><br><br>
+        {% if messages %}
+        {% for i in messages %}
+        <h2>{{i}}</h2>
+        {% endfor %}
+        {% endif %}
+    </form>
+
+</div>
+
+{% endblock content %}
