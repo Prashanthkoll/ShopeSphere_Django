@@ -8,7 +8,10 @@ from django.contrib.auth.decorators import login_required
 def home(request):
     category_nav=True
     brand_nav=False
+    count=0
     # count=AddCard.objects.filter(host=request.user).count()
+    if request.user.is_authenticated:
+        count=AddCard.objects.filter(host=request.user).count()
     products=Product.objects.all()
     if 'trending' in request.GET:
         trendingproducts=Product.objects.filter(trending=1)
@@ -47,8 +50,8 @@ def home(request):
         brand_nav=True
         a=request.GET['category']
         products=Product.objects.filter(category=a)
-        return render(request,'home.html',{'products':products,'products_category':products_category,'category_nav':category_nav,'brand_nav':brand_nav})
-    return render(request,'home.html',{'products':products,'products_category':products_category,'category_nav':category_nav,'brand_nav':brand_nav})
+        return render(request,'home.html',{'products':products,'products_category':products_category,'category_nav':category_nav,'brand_nav':brand_nav,'count':count})
+    return render(request,'home.html',{'products':products,'products_category':products_category,'category_nav':category_nav,'brand_nav':brand_nav,'count':count})
 
 
 def Details(request,id):
