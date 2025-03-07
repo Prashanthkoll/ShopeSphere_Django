@@ -11,7 +11,7 @@
             <img src="{{i.img.url}}" alt="{{ i.name }}" width="200px" height="100" onclick="showImage(this)">
     <h3>{{i.desc | truncatewords:2}} <br> <sup>&#8377;</sup>{{i.price}} <span><a href="{% url 'reduce' i.id %}">-</a>{{i.quantity}}<a href="{% url 'increse' i.id %}">+</a></span></h3>
     <h3><a href="{% url 'details' i.id %}">Details</a> &nbsp; <a href="{% url 'remove' i.id %}">Remove</a></h3>
-    <h3>total={{i.totalprice}}</h3>
+    <h3>Total={{i.totalprice}}</h3>
     <h3><a href="{% url 'buy' i.id %}">Buy</a></h3>
         </div>
     </div>
@@ -35,16 +35,18 @@
         <img src="{{i.img.url}}" alt="{{ i.name }}" width="100px" height="50" onclick="showImage(this)">
         <h3><a href="{% url 'buydelete' i.id %}">Delete</a></h3>
         <h3>total={{i.totalprice}}</h3>
-        </div>
-        {% endfor %}
-    </div>
-    <div class="aaa">
+        </div><br>
         
-        <h2><a href="">Buy All</a></h2>
-        <h3>Cart Total Price = <sup>&#8377;</sup>{{totalcart}}</h3>
-        <h3>Order Total Price = <sup>&#8377;</sup>{{totalorder}}</h3>
-        <h3><a href="{% url 'buydeleteall' %}">Delete All</a></h3>
+        {% endfor %}
+        <hr>
+        <div class="aaa">
+            <h3>Cart Total Price = <sup>&#8377;</sup>{{totalcart}}</h3>
+            <h3>Order Total Price = <sup>&#8377;</sup>{{totalorder}}</h3>
+            <h2><a href="{% url 'ch' %}">Buy</a></h2>
+            <h3><a href="{% url 'buydeleteall' %}">Delete All</a></h3>
+        </div>
     </div>
+    
     <div id="imageModal" class="modal" onclick="closeImage()">
         <img id="largeImage" src="">
     </div>

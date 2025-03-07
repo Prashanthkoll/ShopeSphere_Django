@@ -1,0 +1,41 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+
+<div class="container">
+    <h2>Select a Delivery Address</h2>
+
+    {% if addresses %}
+        <form method="POST">
+            {% csrf_token %}
+            <div class="address-list">
+                {% for address in addresses %}
+                    <div class="address-card">
+                        <input type="radio" name="selected_address" value="{{ address.id }}" id="address_{{ address.id }}" required>
+                        
+                        <label for="address_{{ address.id }}">
+                            <strong>{{ address.name }}</strong><br>
+                            {{ address.street }}, {{ address.city }}, {{ address.state }} - {{ address.pincode }}<br>
+                            Phone: {{ address.phone }}
+                        </label>
+                        <div class="edit-btn">
+                            <a href="{% url 'editaddress' address.id %}" >Edit</a> |
+                            <a href="{% url 'deleteaddress' address.id %}">Delete</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <br>
+            <input type="submit" value="Continue" class="submit-btn">
+        </form>
+        <a href="{% url 'ch1' %}" class="add-address">+ Add New Address</a>
+    {% else %}
+        <p>No address found. Please add an address.</p>
+        <a href="{% url 'ch1' %}" class="add-address">+ Add New Address</a>
+    {% endif %}
+
+    <h3>Delivery Instructions</h3>
+    <textarea class="delivery-instructions" placeholder="Add any delivery instructions..."></textarea>
+</div>
+{% endblock content %}

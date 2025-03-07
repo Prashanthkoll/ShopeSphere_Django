@@ -16,4 +16,11 @@ urlpatterns = [
     path('increse/<int:id>',views.Increse,name='increse'),
     path('reduce1/<int:id>',views.Reduce1,name='reduce1'),
     path('increse1/<int:id>',views.Increse1,name='increse1'),
+    path('ch',views.Checkout,name='ch'),
+    path('ch1',views.AddAddress,name='ch1'),
+    path('editaddress/<int:id>',views.Edit_address,name='editaddress'),
+    path('deleteaddress/<int:id>',views.Delete_address,name='deleteaddress'),
+    path('payment',views.Payment_method, name='payment'),
+    path('order',views.Order_view, name='order'),
+    path('ordersuccess',views.OrderPlaced, name='ordersuccess'),
 ]

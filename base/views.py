@@ -1,12 +1,14 @@
 from django.shortcuts import render,redirect
-from base.models import Product,AddCard,Buy
+from base.models import Product,AddCard,Buy,Address,Delivery
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 # Create your views here.
+
+
 def home(request):
     category_nav=True
     brand_nav=False
-    count=AddCard.objects.filter(host=request.user).count()
+    # count=AddCard.objects.filter(host=request.user).count()
     products=Product.objects.all()
     if 'trending' in request.GET:
         trendingproducts=Product.objects.filter(trending=1)
@@ -26,25 +28,27 @@ def home(request):
         category_nav=False
         products=Product.objects.filter(Q(category__icontains=s) | Q(name__icontains=s) |Q(desc__icontains=s))
 
-    # if request.method=="POST":
-    #     category=request.POST['cat']
-    #     name=request.POST['name']
-    #     desc=request.POST['desc']
-    #     price=request.POST['price']
-    #     img=request.FILES['img']
-    #     Product.objects.create(category=category,name=name,desc=desc,price=price,img=img)
-    #     return redirect('home')
+    if request.method=="POST":
+        category=request.POST['cat']
+        name=request.POST['name']
+        desc=request.POST['desc']
+        price=request.POST['price']
+        img=request.FILES['img']
+        Product.objects.create(category=category,name=name,desc=desc,price=price,img=img)
+        return redirect('home')
+    
     products_category=[]
     for i in products:
         if i.category not in products_category:
             products_category+=[i.category]
+
     if 'category' in request.GET:
         category_nav=False
         brand_nav=True
         a=request.GET['category']
         products=Product.objects.filter(category=a)
-        return render(request,'home.html',{'products':products,'products_category':products_category,'category_nav':category_nav,'brand_nav':brand_nav,'count':count})
-    return render(request,'home.html',{'products':products,'products_category':products_category,'category_nav':category_nav,'brand_nav':brand_nav,'count':count})
+        return render(request,'home.html',{'products':products,'products_category':products_category,'category_nav':category_nav,'brand_nav':brand_nav})
+    return render(request,'home.html',{'products':products,'products_category':products_category,'category_nav':category_nav,'brand_nav':brand_nav})
 
 
 def Details(request,id):
@@ -84,15 +88,6 @@ def Support(request):
     return render(request,'support.html',{'log_nav':log_nav})
 
 
-
-
-# def Add(request):
-#     c = Addcard.objects.filter(host=request.user)
-#     count=Addcard.objects.filter(host=request.user).count()
-#     a = Buy.objects.filter(host=request.user)
-#     ttcost=sum(i.cost*i.quantity for i in c)
-#     totalcost=sum(i.cost*i.quantity for i in a)
-#     return render(request, 'addcard.html',{'products': c,'count':count,'buyproducts': a,'totalcost':totalcost,'ttcost':ttcost})
 
 
 def Remove(request,id):
@@ -157,3 +152,112 @@ def Increse1(request,id):
     a.totalprice+=a.price
     a.save()
     return redirect('cart')
+
+
+def Checkout(request):
+    addresses = Address.objects.filter(host=request.user)
+    if request.method == "POST":
+        global order_address
+        a=request.POST["selected_address"]
+        order_address=Address.objects.filter(Q(id=a) & Q(host=request.user)).first()
+        return redirect('payment')
+    return render(request,'checkout.html',{'addresses': addresses})
+
+
+@login_required
+def AddAddress(request):
+    if request.method == "POST":
+        country = request.POST["country"]
+        name = request.POST["name"]
+        phone = request.POST["phone"]
+        house = request.POST["house"]
+        street = request.POST["street"]
+        land = request.POST["land"]
+        city = request.POST["city"]
+        state = request.POST["state"]
+        pincode = request.POST["pin"]
+        instructions = request.POST.get("inst","")
+        Address.objects.create(host=request.user,country = country,name = name,phone = phone,house = house,street = street,land = land,city = city,state = state,pincode = pincode,instructions = instructions)
+        return redirect("ch")
+
+    return render(request,"checkout1.html")
+
+
+
+@login_required
+def Edit_address(request,id):
+    try:
+        address = Address.objects.get(id=id, host=request.user)
+    except Address.DoesNotExist:
+        return redirect("ch")
+    
+    if request.method == "POST":
+        address.country = request.POST["country"]
+        address.name = request.POST["name"]
+        address.phone = request.POST["phone"]
+        address.house = request.POST["house"]
+        address.street = request.POST["street"]
+        address.land = request.POST["land"]
+        address.city = request.POST["city"]
+        address.state = request.POST["state"]
+        address.pincode = request.POST["pin"]
+        address.instructions = request.POST.get("inst","")
+        address.save()
+        return redirect("ch")
+    return render(request,"editaddress.html",{'address':address})
+
+
+@login_required
+def Delete_address(request,id):
+    try:
+        address = Address.objects.get(id=id, host=request.user)
+        address.delete()
+        return redirect("ch")
+    except Address.DoesNotExist:
+        return redirect("ch")
+
+def Payment_method(request):
+    if request.method == "POST":
+        global payment_mode
+        payment_mode=request.POST['paymentt']
+        delivery = Delivery.objects.first()
+        if delivery:
+            global payment_value
+            payment_value = getattr(delivery,payment_mode,0)
+            print("Payment Mode Value:",payment_value)
+        return redirect('order')
+    return render(request,'checkout2.html')
+
+
+def Order_view(request):
+    Delivery_type_price=0
+    if 'f' in request.GET:
+        Delivery_type=request.GET['f']
+        if Delivery_type=='Oneday':
+            Delivery_type_price=79
+        else:
+            Delivery_type_price=0
+    count=AddCard.objects.filter(host=request.user).count()
+    buycount=Buy.objects.filter(host=request.user).count()
+    buyproducts=Buy.objects.filter(host=request.user)
+    totalorder=sum(i.totalprice for i in buyproducts)
+    delivery_charge=49.5
+    final_total=totalorder+payment_value+delivery_charge+Delivery_type_price
+    
+    context={
+        'count':count,
+        'buycount':buycount,
+        'buyproducts':buyproducts,
+        'delivery_charge':delivery_charge,
+        'total':totalorder,
+        'payment_value':payment_value,
+        'payment_mode':payment_mode,
+        'final_total':final_total,
+        'Delivery_type_price':Delivery_type_price,
+        'order_address':order_address,
+    }
+    totalorder=sum(i.totalprice for i in buyproducts)
+    return render(request,'checkoutmain.html',context)
+
+def OrderPlaced(request):
+    return render(request,'ordersuccess.html')

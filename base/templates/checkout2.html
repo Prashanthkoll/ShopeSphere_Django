@@ -1,0 +1,31 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<div class="checkout2">
+    <div class="container">
+        <header>
+            <h2>Select a payment method</h2>
+        </header>
+        <form method="POST">
+            {% csrf_token %}
+        
+        <input class="continue-btn" type="submit" value="Continue">
+        <div class="payment-options">
+            <h3>UPI</h3>
+            <label><input type="radio" name="paymentt" value="shop_upi" checked required> ShopSphere Pay UPI</label>
+            <label><input type="radio" name="paymentt" value="upi"> Pay by any UPI App</label>
+    
+            <h3>Credit & Debit Cards</h3>
+            <button class="add-card-btn">+ Add a new credit or debit card</button>
+    
+            <h3>More Ways to Pay</h3>
+            <label><input type="radio" name="paymentt" value="shop_balance"> ShopSphere Pay Balance</label>
+            <label><input type="radio" name="paymentt" value="net_bank"> Net Banking</label>
+            <label><input type="radio" name="paymentt" value="cash_on"> Cash on Delivery (₹7 fee applies)</label>
+        </div>
+        <input class="continue-btn" type="submit" value="Continue">
+        
+    </form>
+    </div>
+</div>
+{% endblock content %}

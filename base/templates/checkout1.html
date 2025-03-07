@@ -1,0 +1,75 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<center>
+    <div class="check">
+        <h3>Add your delivery address</h3>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input list="countries" name="country" placeholder="Select Country" required>
+            <datalist id="countries">
+                <option value="India">
+                <option value="USA">
+                <option value="UK">
+                <option value="Canada">
+                <option value="Australia">
+            </datalist><br>
+            <label for="">Address name </label>
+            <input type="text" name="name" required><br>
+            <label for="">Mobile number</label>
+            <input type="number" name="phone" required><br>
+            <label for="">Flat, House no., Building, Company, Apartment..</label>
+            <input type="text" name="house" id="" required><br>
+            <label for="">Area, Street, Village</label>
+            <input type="text" name="street" id="" required><br>
+            <label for="">Landmark</label>
+            <input type="text" name="land" required><br>
+            <div class="a">
+                <div class="aa">
+                    <label for="">Pincode</label>
+                    <input type="number" name="pin" required>
+                </div>
+                <div>
+                    <label for="">Town/City</label>
+                    <input type="text" name="city" required>
+                </div>
+            </div><br>
+            <label for="">State</label>
+            <input list="states" name="state" placeholder="Select State" required>
+            <datalist id="states">
+                <option value="Andhra Pradesh">
+                <option value="Arunachal Pradesh">
+                <option value="Assam">
+                <option value="Bihar">
+                <option value="Chhattisgarh">
+                <option value="Goa">
+                <option value="Gujarat">
+                <option value="Haryana">
+                <option value="Himachal Pradesh">
+                <option value="Jharkhand">
+                <option value="Karnataka">
+                <option value="Kerala">
+                <option value="Madhya Pradesh">
+                <option value="Maharashtra">
+                <option value="Manipur">
+                <option value="Meghalaya">
+                <option value="Mizoram">
+                <option value="Nagaland">
+                <option value="Odisha">
+                <option value="Punjab">
+                <option value="Rajasthan">
+                <option value="Sikkim">
+                <option value="Tamil Nadu">
+                <option value="Telangana">
+                <option value="Tripura">
+                <option value="Uttar Pradesh">
+                <option value="Uttarakhand">
+                <option value="West Bengal">
+            </datalist><br>
+            <label for="">Delivery instructions (optional)</label>
+            <input type="text" name="inst"><br>
+            <input type="submit" value="Use this address">
+        </form>
+    </div>
+</center>
+{% endblock content %}
