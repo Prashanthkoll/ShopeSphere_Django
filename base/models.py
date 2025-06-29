@@ -18,7 +18,7 @@ class AddCard(models.Model):
     img=models.ImageField(default='default.png',upload_to='uploads')
     host=models.ForeignKey(User,on_delete=models.CASCADE,default=1)
     quantity=models.PositiveIntegerField(default=1)
-    totalprice=models.IntegerField(default=0)
+    totalprice = models.DecimalField(max_digits=10, decimal_places=2)
 
 class Buy(models.Model):
     category=models.CharField(max_length=300)
@@ -28,7 +28,7 @@ class Buy(models.Model):
     img=models.ImageField(default='default.png',upload_to='uploads')
     host=models.ForeignKey(User,on_delete=models.CASCADE,default=1)
     quantity=models.PositiveIntegerField(default=1)
-    totalprice=models.IntegerField(default=0)
+    totalprice = models.DecimalField(max_digits=10, decimal_places=2)
 
 
 class Address(models.Model):

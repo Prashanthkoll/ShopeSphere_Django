@@ -23,4 +23,12 @@ urlpatterns = [
     path('payment',views.Payment_method, name='payment'),
     path('order',views.Order_view, name='order'),
     path('ordersuccess',views.OrderPlaced, name='ordersuccess'),
+    # AJAX URLs
+    path('add-to-cart-ajax/', views.add_to_cart_ajax, name='add_to_cart_ajax'),
+    path('update-quantity-ajax/', views.update_quantity_ajax, name='update_quantity_ajax'),
+    path('update-buy-quantity-ajax/', views.update_buy_quantity_ajax, name='update_buy_quantity_ajax'),
+    path('remove-from-cart-ajax/', views.remove_from_cart_ajax, name='remove_from_cart_ajax'),
+    path('remove-from-buy-ajax/', views.remove_from_buy_ajax, name='remove_from_buy_ajax'),
+    path('buy-item-ajax/', views.buy_item_ajax, name='buy_item_ajax'),
+    path('clear-buy-list-ajax/', views.clear_buy_list_ajax, name='clear_buy_list_ajax'),
 ]

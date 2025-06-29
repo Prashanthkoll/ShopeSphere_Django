@@ -27,20 +27,31 @@
         <h4>Deliver to</h4>
         <p>{{order_address.name}}, {{order_address.house}}, {{order_address.street}}, {{order_address.land}}, {{order_address.city}} ...{{order_address.pincode}}, {{order_address.phone}}</p>
     </div>
-
-
-    <form class="delivery-options" action="{% url 'order' %}">
-        <p><input type="radio" name="f" value="Free" required onchange="this.form.submit()"> Free Delivery - Arriving {{ delivery_date }}</p>
-        <p><input type="radio" name="f" value="Oneday" onchange="this.form.submit()"> One-Day Delivery - ₹79</p>
-        
-    </form>
-
-
+    <!-- Replace your delivery form with this -->
+<form class="delivery-options" action="{% url 'order' %}">
+    {% for key, config in delivery_config.items %}
+    <p>
+        <input type="radio" 
+               name="f" 
+               value="{{ key }}" 
+               {% if key == selected_delivery %}checked{% endif %}
+               {% if forloop.first %}required{% endif %}
+               onchange="this.form.submit()"> 
+        {{ config.label }} 
+        {% if config.price > 0 %}
+            - ₹{{ config.price|floatformat:2 }}
+        {% endif %}
+        {% if key == 'Free' %}
+            - Arriving {{ delivery_date }}
+        {% endif %}
+    </p>
+    {% endfor %}
+</form>
 
     <div class="order-summary">
         <p>Items: <span>{{ buycount}}</span></p>
         <p>Delivery Fee: <span>₹{{ delivery_charge }}</span></p>
-        <p>Fast / Normal Delivery Fee: <span>₹{{ Delivery_type_price }}</span></p>
+        <p>Fast / Normal Delivery Fee: <span>₹{{ delivery_type_price }}</span></p>
         <p>Cash / Pay on Delivery Fee:{{payment_mode}} <span>₹{{ payment_value }}</span></p>
         <p>Total: <span>₹{{ total }}</span></p>
         <p class="total">Order Total: <span>₹{{ final_total }}</span></p>
@@ -54,7 +65,5 @@
     </a>
 </div>
 
-</div>
-    
-    
+</div>      
 {% endblock content %}

@@ -4,22 +4,30 @@
 
 <div class="cart">
     <h1>Cart Items</h1>
-    {% for i in data %}
-    <div class="addcard">
-        <h2>{{i.name}}</h2>
-        <div class="a">
-            <img src="{{i.img.url}}" alt="{{ i.name }}" width="200px" height="100" onclick="showImage(this)">
-    <h3>{{i.desc | truncatewords:2}} <br> <sup>&#8377;</sup>{{i.price}} <span><a href="{% url 'reduce' i.id %}">-</a>{{i.quantity}}<a href="{% url 'increse' i.id %}">+</a></span></h3>
-    <h3><a href="{% url 'details' i.id %}">Details</a> &nbsp; <a href="{% url 'remove' i.id %}">Remove</a></h3>
-    <h3>Total={{i.totalprice}}</h3>
-    <h3><a href="{% url 'buy' i.id %}">Buy</a></h3>
+    <div id="cart-items-container">
+        {% for i in data %}
+        <div class="addcard" id="cart-item-{{i.id}}">
+            <h2>{{i.name}}</h2>
+            <div class="a">
+                <img src="{{i.img.url}}" alt="{{ i.name }}" width="200px" height="100" onclick="showImage(this)">
+                <h3>{{i.desc | truncatewords:2}} <br> <sup>&#8377;</sup>{{i.price}}
+                    <span>
+                        <a href="#" onclick="updateQuantity('{{i.id}}', 'decrease', 'cart'); return false;">-</a>
+                        <span id="cart-qty-{{i.id}}">{{i.quantity}}</span>
+                        <a href="#" onclick="updateQuantity('{{i.id}}', 'increase', 'cart'); return false;">+</a>
+                    </span>
+                </h3>
+                <h3><a href="#" onclick="removeFromCart('{{i.id}}', 'cart'); return false;">Remove</a>
+                </h3>
+                <h3>Total=<span id="cart-subtotal-{{i.id}}">{{i.totalprice}}</span></h3>
+                <h3><a href="#" onclick="buyItem('{{i.id}}'); return false;" class="buy-btn">Buy</a></h3>
+            </div>
         </div>
+        {% endfor %}
     </div>
-
     <div id="imageModal" class="modal" onclick="closeImage()">
         <img id="largeImage" src="">
     </div>
-    {% endfor %}
 </div>
 
 
@@ -28,22 +36,30 @@
 <div class="buy">
     <h1>Order Items</h1>
     <div class="aa">
-        {% for i in buyproducts %}
-        <div class="aa1">
-            <h2>{{i.name}}</h2>
-        <h3>{{i.desc | truncatewords:2}}<sup>&#8377;</sup>{{i.price}}<span><a href="{% url 'reduce1' i.id %}">-</a>{{i.quantity}}<a href="{% url 'increse1' i.id %}">+</a></span></h3>
-        <img src="{{i.img.url}}" alt="{{ i.name }}" width="100px" height="50" onclick="showImage(this)">
-        <h3><a href="{% url 'buydelete' i.id %}">Delete</a></h3>
-        <h3>total={{i.totalprice}}</h3>
-        </div><br>
+        <div id="buy-items-container">
+            {% for i in buyproducts %}
+            <div class="aa1" id="buy-item-{{i.id}}">
+                <h2>{{i.name}}</h2>
+                <h3>{{i.desc | truncatewords:2}}<sup>&#8377;</sup>{{i.price}}
+                    <span>
+                        <a href="#" onclick="updateQuantity('{{ i.id }}', 'decrease', 'buy'); return false;">-</a>
+                        <span id="buy-qty-{{i.id}}">{{i.quantity}}</span>
+                        <a href="#" onclick="updateQuantity('{{i.id}}', 'increase', 'buy'); return false;">+</a>
+                    </span>
+                </h3>
+                <img src="{{i.img.url}}" alt="{{ i.name }}" width="100px" height="50" onclick="showImage(this)">
+                <h3><a href="#" onclick="removeFromCart('{{i.id}}', 'buy'); return false;">Delete</a></h3>
+                <h3>total=<span id="buy-subtotal-{{i.id}}">{{i.totalprice}}</span></h3>
+            </div><br>
+            {% endfor %}
+        </div>
         
-        {% endfor %}
         <hr>
         <div class="aaa">
-            <h3>Cart Total Price = <sup>&#8377;</sup>{{totalcart}}</h3>
-            <h3>Order Total Price = <sup>&#8377;</sup>{{totalorder}}</h3>
+            <h3>Cart Total Price = <sup>&#8377;</sup><span id="cart-total">{{totalcart}}</span></h3>
+            <h3>Order Total Price = <sup>&#8377;</sup><span id="order-total">{{totalorder}}</span></h3>
             <h2><a href="{% url 'ch' %}">Buy</a></h2>
-            <h3><a href="{% url 'buydeleteall' %}">Delete All</a></h3>
+            <h3><a href="#" onclick="clearBuyList(); return false;">Delete All</a></h3>
         </div>
     </div>
     
@@ -51,7 +67,32 @@
         <img id="largeImage" src="">
     </div>
 </div>
+
+<script>
+// Add clear buy list function
+function clearBuyList() {
+    if (confirm('Are you sure you want to delete all order items?')) {
+        fetch('/clear-buy-list-ajax/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': getCookie('csrftoken'),
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                document.getElementById('buy-items-container').innerHTML = '';
+                document.getElementById('order-total').textContent = '0';
+                showNotification('All order items deleted', 'success');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error deleting items', 'error');
+        });
+    }
+}
+</script>
 <script src="{% static 'js/main.js' %}"></script>
-
-
 {% endblock content %}

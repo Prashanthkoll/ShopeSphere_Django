@@ -3,16 +3,23 @@
 {% block content %}
 
 <div class="details">
-        <div class="addcard">
-            <img src="{{data.img.url}}" alt="{{ i.name }}" width="200px" height="100" onclick="showImage(this)">
-            <h2>{{data.name}}</h2>
+    <div class="addcard">
+        <img src="{{data.img.url}}" alt="{{ data.name }}" width="200px" height="100" onclick="showImage(this)">
+        <h2>{{data.name}}</h2>
         <h3>{{data.desc}} <br> <sup>&#8377;</sup>{{data.price}}</h3>
-        <h3><a href="{% url 'addcart' data.id %}">Cart</a></h3>
-        </div>
-    
-        <div id="imageModal" class="modal" onclick="closeImage()">
-            <img id="largeImage" src="">
-        </div>
+        <h3>
+            {% if user.is_authenticated %}
+                <a href="#" onclick="addToCart('{{data.id}}', this); return false;" class="cart-btn">Add to Cart</a>
+            {% else %}
+                <a href="{% url 'addcart' data.id %}">Cart</a>
+            {% endif %}
+        </h3>
+    </div>
+
+    <div id="imageModal" class="modal" onclick="closeImage()">
+        <img id="largeImage" src="">
+    </div>
 </div>
+
 <script src="{% static 'js/main.js' %}"></script>
 {% endblock content %}

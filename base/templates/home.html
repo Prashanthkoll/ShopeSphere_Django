@@ -27,6 +27,8 @@
     <form action="" >
         <input class="sale"  type="submit" name="sale" value="Sale">
     </form>
+
+
     {% for i in products_category %}
         <!-- <h5><a href="">{{i}}</a></h5> -->
         <form action="" >
@@ -58,7 +60,14 @@
         <img src="{{i.img.url}}" alt="{{ i.name }}" width="200px" height="100" onclick="showImage(this)">
         <h2>{{i.name}}</h2>
     <h3>{{i.desc | truncatewords:2}} <br> <sup>&#8377;</sup>{{i.price}}</h3>
-    <h3><a href="{% url 'details' i.id %}">Details</a> &nbsp; <a href="{% url 'addcart' i.id %}">Cart</a></h3>
+    <h3><a href="{% url 'details' i.id %}">Details</a> &nbsp;
+
+        {% if user.is_authenticated %}
+        <a href="#" onclick="addToCart('{{ i.id }}', this); return false;" class="cart-btn">Cart</a>
+        {% else %}
+                <a href="{% url 'addcart' i.id %}">Cart</a>
+        {% endif %}
+    </h3>
     </div>
 
     <div id="imageModal" class="modal" onclick="closeImage()">
