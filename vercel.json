@@ -6,7 +6,7 @@
             "config": {
                 "maxLambdaSize": "15mb",
                 "runtime": "python3.12",
-                "excludeFiles": "{static,staticfiles_build}/**"
+                "excludeFiles": "{static/css,static/js,staticfiles_build}/**"
             }
         },
         {
