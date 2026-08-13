@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,10 +23,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-nb4eh#(*1mm70djr$irfkp-zn0o-2cr0msvus9s^poenz%f-td'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    h.strip() for h in os.environ.get(
+        'ALLOWED_HOSTS', 'localhost,127.0.0.1'
+    ).split(',') if h.strip()
+]
 
+VERCEL_URL = os.environ.get('VERCEL_URL')
+if VERCEL_URL:
+    ALLOWED_HOSTS.append(VERCEL_URL)
+ALLOWED_HOSTS.append('.vercel.app')
 
 # Application definition
 
@@ -77,13 +85,26 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+import shutil
+
+if os.environ.get('VERCEL_ENV'):
+    _runtime_db_path = Path('/tmp/db.sqlite3')
+    _bundled_db_path = BASE_DIR / 'db.sqlite3'
+    try:
+        if not _runtime_db_path.exists() and _bundled_db_path.exists():
+            shutil.copyfile(_bundled_db_path, _runtime_db_path)
+        DB_PATH = _runtime_db_path
+    except OSError:
+        DB_PATH = _bundled_db_path
+else:
+    DB_PATH = BASE_DIR / 'db.sqlite3'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': DB_PATH,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
